@@ -1,7 +1,7 @@
-| :---: | :------------------------: |
-|  Nama |   Lalu Aldo Wadagraprana   |
-|  NRP  |        5025221101          |
-| Kelas |     Grafika Komputer A     |
+|    NRP     |            Name            |
+| :--------: | :------------------------: |
+| 5025221101 |   Lalu Aldo Wadagraprana   |
+
 
 # Overview Singkat
 
