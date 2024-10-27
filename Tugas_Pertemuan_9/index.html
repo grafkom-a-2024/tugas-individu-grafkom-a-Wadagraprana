@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tugas Pertemuan 9 - Three.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+  <script>
+    let scene, camera, renderer, cube;
+    let isJumping = false;
+    let velocity = 0;
+    let isFlipping = false; // Status untuk flip
+    let flipAngle = 0; // Sudut untuk animasi flip
+    let flipDirection = null; // Menyimpan arah flip
+    let rotateLeft = false; // Status untuk rotasi kiri
+    let rotateRight = false; // Status untuk rotasi kanan
+
+    function init() {
+      // Inisialisasi scene, kamera, dan renderer
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xeeeeee);
+
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(5, 5, 5);
+      camera.lookAt(0, 0, 0);
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      document.body.appendChild(renderer.domElement);
+
+      // Membuat balok dengan warna berbeda untuk setiap sisi
+      const geometry = new THREE.BoxGeometry();
+      const materials = [
+        new THREE.MeshStandardMaterial({ color: 0xff0000 }), // Merah
+        new THREE.MeshStandardMaterial({ color: 0x00ff00 }), // Hijau
+        new THREE.MeshStandardMaterial({ color: 0x0000ff }), // Biru
+        new THREE.MeshStandardMaterial({ color: 0xffff00 }), // Kuning
+        new THREE.MeshStandardMaterial({ color: 0xff00ff }), // Ungu
+        new THREE.MeshStandardMaterial({ color: 0x00ffff })  // Cyan
+      ];
+      cube = new THREE.Mesh(geometry, materials);
+      cube.castShadow = true;
+      cube.position.y = 0.5;
+      scene.add(cube);
+
+      // Menambahkan lantai untuk menangkap bayangan
+      const floorGeometry = new THREE.PlaneGeometry(10, 10);
+      const floorMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = 0;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // Menambahkan pencahayaan
+      const ambientLight = new THREE.AmbientLight(0x404040);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(8, 5, 0);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+
+      directionalLight.shadow.mapSize.width = 1024;
+      directionalLight.shadow.mapSize.height = 1024;
+      directionalLight.shadow.camera.near = 0.5;
+      directionalLight.shadow.camera.far = 20;
+
+      // Event listener untuk kontrol keyboard
+      document.addEventListener('keydown', onDocumentKeyDown, false);
+      document.addEventListener('keyup', onDocumentKeyUp, false);
+
+      window.addEventListener('resize', onWindowResize, false);
+
+      animate();
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function onDocumentKeyDown(event) {
+      const keyCode = event.which;
+      if (keyCode === 37) {
+        cube.position.x -= 0.1;
+      } else if (keyCode === 39) {
+        cube.position.x += 0.1;
+      } else if (keyCode === 38) {
+        cube.position.z -= 0.1;
+      } else if (keyCode === 40) {
+        cube.position.z += 0.1;
+      } else if (keyCode === 32 && !isJumping) {
+        isJumping = true;
+        velocity = 0.1;
+      } else if (!isFlipping) {
+        // Mengatur arah flip berdasarkan tombol yang ditekan
+        if (keyCode === 83) { // S untuk backflip
+          flipDirection = 'backflip';
+        } else if (keyCode === 87) { // W untuk flip ke depan
+          flipDirection = 'forward';
+        } else if (keyCode === 65) { // A untuk flip ke kiri
+          flipDirection = 'left';
+        } else if (keyCode === 68) { // D untuk flip ke kanan
+          flipDirection = 'right';
+        }
+
+        // Mulai flip jika ada arah yang dipilih
+        if (flipDirection) {
+          isFlipping = true;
+          flipAngle = 0;
+        }
+      }
+
+      // Rotasi manual dengan tombol Q dan E pada sumbu Y
+      if (keyCode === 81) { // Q untuk rotasi kiri pada sumbu Y
+        rotateLeft = true;
+      } else if (keyCode === 69) { // E untuk rotasi kanan pada sumbu Y
+        rotateRight = true;
+      }
+    }
+
+    function onDocumentKeyUp(event) {
+      const keyCode = event.which;
+      if ([37, 38, 39, 40].includes(keyCode)) {
+        event.preventDefault();
+      }
+
+      // Hentikan rotasi ketika Q atau E dilepas
+      if (keyCode === 81) { // Q
+        rotateLeft = false;
+      } else if (keyCode === 69) { // E
+        rotateRight = false;
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Logika Lompatan
+      if (isJumping) {
+        cube.position.y += velocity;
+        velocity -= 0.005;
+        if (cube.position.y <= 0.5) {
+          cube.position.y = 0.5;
+          isJumping = false;
+          velocity = 0;
+        }
+      }
+
+      // Logika Flip
+      if (isFlipping) {
+        flipAngle += 0.05; // Menambah sudut rotasi secara perlahan
+
+        // Cek arah flip dan rotasi pada sumbu yang sesuai
+        if (flipDirection === 'backflip') {
+          cube.rotation.x += 0.05; // Backflip pada sumbu X
+        } else if (flipDirection === 'forward') {
+          cube.rotation.x -= 0.05; // Flip ke depan pada sumbu X
+        } else if (flipDirection === 'left') {
+          cube.rotation.z += 0.05; // Flip ke kiri pada sumbu Z
+        } else if (flipDirection === 'right') {
+          cube.rotation.z -= 0.05; // Flip ke kanan pada sumbu Z
+        }
+
+        // Hentikan flip setelah mencapai 180 derajat (0.5π radian)
+        if (flipAngle >= Math.PI) {
+          flipAngle = 0;
+          isFlipping = false;
+          flipDirection = null;
+        }
+      }
+
+      // Logika Rotasi pada Sumbu Y
+      if (rotateLeft) {
+        cube.rotation.y -= 0.05; // Rotasi kiri pada sumbu Y
+      }
+      if (rotateRight) {
+        cube.rotation.y += 0.05; // Rotasi kanan pada sumbu Y
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    init();
+  </script>
+</body>
+</html>
