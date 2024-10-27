@@ -1,14 +1,6 @@
-<<<<<<< HEAD
-| :---: | :------------------------: |
-|  Nama |   Lalu Aldo Wadagraprana   |
-|  NRP  |        5025221101          |
-| Kelas |     Grafika Komputer A     |
-=======
 |    NRP     |            Nama            |        Kelas         |
 | :--------: | :------------------------: | :------------------: |
 | 5025221101 |   Lalu Aldo Wadagraprana   |  Grafika Komputer A  |
-
->>>>>>> c33ac285f6efe59181e4c4fc7ee188942f56a22d
 
 # Overview Singkat
 
@@ -51,9 +43,3 @@ animasi dan user interaction (Keyboard) untuk mengganti mode:
 - space : melakukan jump
 
 ![TP9](./img/TP9.png)
-=======
-## Tugas Pertemuan 3
-
-Dalam Tugas ini, saya membuat objek 3d kubus, yang bisa melakukan rotating angle x, y, z, Prespectife 3d, dengan fudgefactor untuk mengubah atau memodifikasi rendering secara visual, seperti memperbaiki masalah tampilan geometri, skala, atau efek perspektif, dan translation
-![image](https://github.com/user-attachments/assets/c1b40398-f92c-4303-9d3d-cf96e88e44b2)
->>>>>>> c33ac285f6efe59181e4c4fc7ee188942f56a22d
