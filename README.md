@@ -34,8 +34,8 @@ animasi dan user interaction (Keyboard) untuk mengganti mode:
 - arrow down : mundur
 - arrow right : kanan
 - arrow left : kiri
-- q : rotating sumbu y clockwise
-- e : rotating sumbu y counter clockwise
+- q : rotating sumbu y counter clockwise
+- e : rotating sumbu y clockwise
 - w : melakukan flip depan
 - a : melakukan flip kiri
 - s : melakukan flip belakang

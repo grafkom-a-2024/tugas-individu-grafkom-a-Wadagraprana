@@ -118,9 +118,9 @@
 
       // Rotasi manual dengan tombol Q dan E pada sumbu Y
       if (keyCode === 81) { // Q untuk rotasi kiri pada sumbu Y
-        rotateLeft = true;
-      } else if (keyCode === 69) { // E untuk rotasi kanan pada sumbu Y
         rotateRight = true;
+      } else if (keyCode === 69) { // E untuk rotasi kanan pada sumbu Y
+        rotateLeft = true;
       }
     }
 
@@ -132,9 +132,9 @@
 
       // Hentikan rotasi ketika Q atau E dilepas
       if (keyCode === 81) { // Q
-        rotateLeft = false;
-      } else if (keyCode === 69) { // E
         rotateRight = false;
+      } else if (keyCode === 69) { // E
+        rotateLeft = false;
       }
     }
 
